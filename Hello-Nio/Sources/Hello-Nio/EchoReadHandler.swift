@@ -5,25 +5,35 @@
 import NIO
 import Foundation
 
-class EchoReadHandler: ChannelInboundHandler {
+public class EchoReadHandler: ChannelInboundHandler {
 
-    typealias InboundIn = ByteBuffer
-    typealias OutboundOut = String
+    public typealias InboundIn = ByteBuffer
+    public typealias OutboundOut = String
 
     init() {
         self.compositeBytes = ByteBufferAllocator().buffer(capacity: 64)
+        self.logger = { msg in
+            print(msg)
+        }
     }
+
+    public init(logger: @escaping (String) -> Void) {
+        self.compositeBytes = ByteBufferAllocator().buffer(capacity: 64)
+        self.logger = logger
+    }
+
+    let logger: (String) -> Void
 
     var remote: String?
 
     var compositeBytes: ByteBuffer
 
-    func channelRegistered(ctx: ChannelHandlerContext) {
+    public func channelRegistered(ctx: ChannelHandlerContext) {
         self.remote = ctx.remoteAddress?.description ?? "unknown"
-        print("new channel registered.[\(remote)]")
+        logger("new channel registered.[\(remote)]")
     }
 
-    func channelRead(ctx: ChannelHandlerContext, data: NIOAny) {
+    public func channelRead(ctx: ChannelHandlerContext, data: NIOAny) {
         var buffer = unwrapInboundIn(data)
         let size = buffer.readableBytes
         if (compositeBytes.writableBytes < size) {
@@ -32,14 +42,14 @@ class EchoReadHandler: ChannelInboundHandler {
         compositeBytes.write(buffer: &buffer)
     }
 
-    func channelReadComplete(ctx: ChannelHandlerContext) {
+    public func channelReadComplete(ctx: ChannelHandlerContext) {
         let message = compositeBytes.readString(length: compositeBytes.readableBytes)
-        print("message[from: \(remote)]: \(message)")
+        logger("message[from: \(remote)]: \(message)")
         ctx.write(wrapOutboundOut(message ?? ""), promise: nil)
     }
 
-    func errorCaught(ctx: ChannelHandlerContext, error: Error) {
-        print("error: \(error)")
+    public func errorCaught(ctx: ChannelHandlerContext, error: Error) {
+        logger("error: \(error)")
         ctx.close(promise: nil)
     }
 }
