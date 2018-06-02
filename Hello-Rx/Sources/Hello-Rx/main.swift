@@ -125,4 +125,24 @@ func flatMapping() {
             .subscribe(subscriber(name: "text-colour"))
 }
 
+protocol Monoid {
+    associatedtype MonoidType
+    func append(other: MonoidType) -> MonoidType
+    static func zero() -> MonoidType
+}
+
+struct Sum<N: Numeric>: Monoid {
+    let value: N
+
+    typealias MonoidType = Sum<N>
+
+    func append(other: Sum<N>) -> Sum<N> {
+        return Sum(value: self.value + other.value)
+    }
+
+    static func zero() -> Sum<N> {
+        return Sum(value: 0 as N)
+    }
+}
+
 flatMapping()
