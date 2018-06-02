@@ -145,4 +145,17 @@ struct Sum<N: Numeric>: Monoid {
     }
 }
 
-flatMapping()
+func scanning() {
+    let _ = Observable.of(1, 2, 3, 4, 5)
+            .map { number in
+                Sum(value: number)
+            }
+            .scan(Sum<Int>.zero(), accumulator: { accum, value in
+                NSLog("accum: \(accum), value: \(value)")
+                return accum.append(other: value)
+            }).map({ String(describing: $0) })
+            .subscribe(subscriber(name: "scanning"))
+}
+
+
+scanning()
