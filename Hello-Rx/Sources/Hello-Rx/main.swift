@@ -105,4 +105,24 @@ func mapping() {
     sub.disposed(by: DisposeBag())
 }
 
-mapping()
+enum Colour {
+    case blue
+    case red
+    case green
+}
+
+struct Text {
+    let text: String
+    let colour: Colour
+}
+
+func flatMapping() {
+    let colours = Observable<Colour>.of(.blue, .green, .red)
+    let texts = Observable<String>.of("foo", "bar")
+
+    _ = colours.flatMap({ c in texts.map({ t in Text(text: t, colour: c) }) })
+            .map({ String(describing: $0) })
+            .subscribe(subscriber(name: "text-colour"))
+}
+
+flatMapping()
