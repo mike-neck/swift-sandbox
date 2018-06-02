@@ -42,12 +42,12 @@ func fourth() {
     // subscribe した後のイベントしか購読できない publisher
     let publishSubject = PublishSubject<String>()
 
-    let dispatchQueue = DispatchQueue.global(qos: .default)
+    _ = DispatchQueue.global(qos: .default)
 
     publishSubject.onNext("foo")
     publishSubject.onNext("bar")
 
-    let sub1 = publishSubject
+    _ = publishSubject
             .subscribe(
                     onNext: { NSLog("sub1: \($0)") },
                     onCompleted: { NSLog("finished") })
@@ -56,7 +56,7 @@ func fourth() {
     publishSubject.onNext("Hello")
     publishSubject.onNext("World")
 
-    let sub2 = publishSubject.subscribe { msg in
+    _ = publishSubject.subscribe { msg in
         NSLog("sub2: \(msg)")
     }
 
@@ -70,7 +70,7 @@ func fifth() {
     behaviorSubject.onNext("bar")
     behaviorSubject.onNext("baz")
 
-    let sub1: Disposable = behaviorSubject.subscribe({ msg in
+    let _: Disposable = behaviorSubject.subscribe({ msg in
         NSLog("receive: \(msg)")
     })
 
@@ -79,7 +79,7 @@ func fifth() {
 
 func subscriber(name: String) -> (Event<String>) -> () {
     return { msg in
-        NSLog("\(name): \(msg.element)")
+        NSLog("\(name): [\(type(of: msg))] \(String(describing: msg.element))")
     }
 }
 
@@ -98,8 +98,11 @@ func sixth() {
     replaySubject.onNext("next bar")
 }
 
-fourth()
+func mapping() {
+    let sub = Observable.of("foo", "bar", "baz").map({ str in
+        return "\(str) -> \(str.lengthOfBytes(using: .utf8))"
+    }).subscribe(subscriber(name: "mapping"))
+    sub.disposed(by: DisposeBag())
+}
 
-fifth()
-
-sixth()
+mapping()
