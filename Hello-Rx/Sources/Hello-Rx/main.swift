@@ -169,4 +169,17 @@ func buffer() {
             }
 }
 
-buffer()
+func filters() {
+    _ = PublishSubject<Int>.generate(
+                    initialState: Int(arc4random_uniform(20)),
+                    condition: { _ in true },
+                    iterate: { _ in Int(arc4random_uniform(20)) })
+            .take(15)
+            .filter {
+                $0 > 10
+            }
+            .map({ String(describing: $0) })
+            .subscribe(subscriber(name: "filters"))
+}
+
+filters()
