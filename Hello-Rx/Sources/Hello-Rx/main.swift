@@ -83,11 +83,15 @@ func subscriber(name: String) -> (Event<String>) -> () {
     }
 }
 
+private func fooBarBaz(observerType: ReplaySubject<String>) {
+    observerType.onNext("foo")
+    observerType.onNext("bar")
+    observerType.onNext("baz")
+}
+
 func sixth() {
     let replaySubject = ReplaySubject<String>.create(bufferSize: 3)
-    replaySubject.onNext("foo")
-    replaySubject.onNext("bar")
-    replaySubject.onNext("baz")
+    fooBarBaz(observerType: replaySubject)
 
     let _ = replaySubject.subscribe(subscriber(name: "6-sub1"))
 
@@ -157,5 +161,12 @@ func scanning() {
             .subscribe(subscriber(name: "scanning"))
 }
 
+func buffer() {
+    _ = Observable<Int>.from((1...11).map({ $0 }))
+            .buffer(timeSpan: 3, count: 2, scheduler: scheduler)
+            .subscribe { event in
+                NSLog("type: \(type(of: event)), value: \(String(describing: event))")
+            }
+}
 
-scanning()
+buffer()
