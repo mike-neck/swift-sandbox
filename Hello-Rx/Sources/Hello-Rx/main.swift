@@ -186,5 +186,22 @@ func startsWith() {
     let _ = Observable.of(2, 3, 5, 8, 13).startWith(1).map({ "current: \($0)" }).subscribe(subscriber(name: "startsWith 1, 2..."))
 }
 
+func merge() {
+    let left = PublishSubject<Int>()
+    let right = PublishSubject<Int>()
 
-startsWith()
+    _ = Observable.merge(left, right).subscribe(onNext: { value in
+        NSLog("value: \(value)")
+    })
+
+    left.onNext(10)
+    left.onNext(20)
+    left.onNext(30)
+    right.onNext(1000)
+    left.onNext(40)
+    right.onNext(2000)
+    right.onNext(3000)
+    left.onNext(50)
+}
+
+merge()
