@@ -221,4 +221,13 @@ func zipping() {
             .subscribe(subscriber(name: "zipping"))
 }
 
-zipping()
+func concat() {
+    let first = Observable<Int>.of(1, 2, 3)
+    let second = Observable<Int>.of(100, 200)
+
+    _ = Observable.concat(first, second)
+            .map({ num in "number: \(num)" })
+            .subscribe(subscriber(name: "concat"))
+}
+
+concat()
