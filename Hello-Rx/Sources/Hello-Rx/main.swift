@@ -204,4 +204,21 @@ func merge() {
     left.onNext(50)
 }
 
-merge()
+func zipping() {
+    struct Msg {
+        let number: Int
+        let text: String
+    }
+
+    let numbers = Observable<Int>.generate(
+            initialState: 1,
+            condition: { _ in return true },
+            iterate: { number in number + 1 }).take(20)
+    let strings = Observable<String>.of("foo", "bar", "baz", "qux", "waldo", "garply")
+
+    _ = Observable.zip(numbers, strings, resultSelector: { (num, txt) in Msg(number: num, text: txt) })
+            .map({ msg in String(describing: msg) })
+            .subscribe(subscriber(name: "zipping"))
+}
+
+zipping()
