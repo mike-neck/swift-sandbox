@@ -182,4 +182,9 @@ func filters() {
             .subscribe(subscriber(name: "filters"))
 }
 
-filters()
+func startsWith() {
+    let _ = Observable.of(2, 3, 5, 8, 13).startWith(1).map({ "current: \($0)" }).subscribe(subscriber(name: "startsWith 1, 2..."))
+}
+
+
+startsWith()
