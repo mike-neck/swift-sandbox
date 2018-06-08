@@ -61,6 +61,7 @@ func fourth() {
     }
 
     publishSubject.onNext("both will receive this message")
+    publishSubject.onCompleted()
 }
 
 func fifth() {
@@ -263,3 +264,5 @@ func sideEffects() {
 }
 
 sideEffects()
+
+fourth()
