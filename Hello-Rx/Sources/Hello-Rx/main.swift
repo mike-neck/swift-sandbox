@@ -230,4 +230,36 @@ func concat() {
             .subscribe(subscriber(name: "concat"))
 }
 
-concat()
+func sideEffects() {
+    struct Sum {
+        var values: [Int] = []
+
+        func get() -> Int {
+            return values.reduce(0) { (accum, value) in accum + value }
+        }
+
+        mutating func add(value: Int) {
+            self.values.append(value)
+        }
+    }
+
+    let observable = Observable.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+    let semaphore = DispatchSemaphore(value: 0)
+
+    var sum: Sum = Sum()
+
+    _ = observable
+            .delay(0.5, scheduler: scheduler)
+            .do(onNext: { v in sum.add(value: v) }, onCompleted: {
+                NSLog("sum-on-complete: \(sum.get())")
+                semaphore.signal()
+            })
+            .map { v in "value: \(v)"}
+            .subscribe(subscriber(name: "side-effect"))
+
+    NSLog("sum-main: \(sum.get())")
+
+    semaphore.wait()
+}
+
+sideEffects()
