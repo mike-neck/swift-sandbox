@@ -236,7 +236,9 @@ func sideEffects() {
         var values: [Int] = []
 
         func get() -> Int {
-            return values.reduce(0) { (accum, value) in accum + value }
+            return values.reduce(0) { (accum, value) in
+                accum + value
+            }
         }
 
         mutating func add(value: Int) {
@@ -255,7 +257,9 @@ func sideEffects() {
                 NSLog("sum-on-complete: \(sum.get())")
                 semaphore.signal()
             })
-            .map { v in "value: \(v)"}
+            .map { v in
+                "value: \(v)"
+            }
             .subscribe(subscriber(name: "side-effect"))
 
     NSLog("sum-main: \(sum.get())")
@@ -263,6 +267,26 @@ func sideEffects() {
     semaphore.wait()
 }
 
-sideEffects()
+func single() {
+    NSLog("single")
+    let semaphore = DispatchSemaphore(value: 0)
+    let disposeBag = DisposeBag()
+    let single = Single<String>.create(subscribe: { singleObserver in
+        DispatchQueue.global(qos: .default).asyncAfter(deadline: DispatchTime.now() + .milliseconds(500), execute: {
+            singleObserver(.success("single success"))
+            semaphore.signal()
+        })
+        return Disposables.create()
+    })
+    single.do(onDispose: { semaphore.signal() }).subscribe({ event in
+        switch event {
+        case .success(let message):
+            NSLog("message: \(message)")
+        case .error(let err):
+            NSLog("error: \(String(describing: err))")
+        }
+    }).disposed(by: disposeBag)
+    semaphore.wait()
+}
 
-fourth()
+single()
