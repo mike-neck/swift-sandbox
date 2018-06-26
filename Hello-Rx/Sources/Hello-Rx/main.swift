@@ -1,6 +1,8 @@
 import RxSwift
 import Foundation
 
+import Hello_Rx_Mod
+
 let scheduler = SerialDispatchQueueScheduler(qos: .default)
 
 func first() {
@@ -289,4 +291,6 @@ func single() {
     semaphore.wait()
 }
 
-single()
+//single()
+
+fizzBuzz(to: 32)
