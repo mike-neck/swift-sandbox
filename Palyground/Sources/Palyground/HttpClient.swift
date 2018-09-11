@@ -44,7 +44,7 @@ class HttpClient {
                 return Disposables.create()
             }
             NSLog("preparing request")
-            let eventLoopFuture: EventLoopFuture<Void> = future.then { channel in
+            _ = future.then { (channel: Channel) -> EventLoopFuture<Void> in
                 NSLog("channel: \(channel)[active:\(channel.isActive),writable:\(channel.isWritable)]")
                 var httpHeadPart = HTTPRequestHead(version: HTTPVersion(major: 1, minor: 1), method: HTTPMethod.GET, uri: self.url.absoluteString)
                 NSLog("publishing request")
@@ -56,14 +56,12 @@ class HttpClient {
                     ("Accept", "application/json")
                 ])
                 NSLog("writing header")
-                let fu = channel.writeAndFlush(HTTPClientRequestPart.head(httpHeadPart))
+                let _ = channel.write(HTTPClientRequestPart.head(httpHeadPart))
+                let fu = channel.writeAndFlush(HTTPClientRequestPart.end(nil))
                 NSLog("writing finished")
                 return fu
             }
-            NSLog("request has been published")
-            return Disposables.create {
-                eventLoopFuture
-            }
+            return Disposables.create()
         }
     }
 
@@ -103,7 +101,7 @@ class HttpClient {
     private func initializeChannel(sslContext: Ssl, clientHandler: HttpClientHandler) -> (Channel) -> EventLoopFuture<Void> {
         return { channel in
             let pipeline: ChannelPipeline = channel.pipeline
-            let sslHandler = try! OpenSSLClientHandler(context: sslContext)
+            let sslHandler = try! OpenSSLClientHandler(context: sslContext, serverHostname: self.host())
             _ = pipeline.add(handler: LoggingHandler("internet", "ssl-handler"))
             _ = pipeline.add(name: "ssl-handler", handler: sslHandler)
             _ = pipeline.add(handler: LoggingHandler("ssl-handler", "http-codecs"))
