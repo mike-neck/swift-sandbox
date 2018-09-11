@@ -22,5 +22,6 @@ let package = Package(
             name: "Palyground",
             dependencies: ["NIO", "NIOHTTP1", "NIOOpenSSL", "RxSwift"]),
         .target(name:"HttpClient2", dependencies:["NIO","NIOOpenSSL","NIOHTTP1","RxSwift"]),
+        .target(name:"RxPlay", dependencies:["RxSwift"]),
     ]
 )
