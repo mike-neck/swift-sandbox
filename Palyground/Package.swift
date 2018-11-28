@@ -6,7 +6,8 @@ import PackageDescription
 let package = Package(
     name: "Palyground",
     products: [
-        .executable(name: "Palyground", targets: ["Palyground"])
+        .executable(name: "Palyground", targets: ["Palyground"]),
+        .executable(name: "Types", targets:["Types"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
@@ -16,8 +17,7 @@ let package = Package(
         .package(url: "git@github.com:ReactiveX/RxSwift.git", from: "4.0.0"),
     ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages which this package depends on.
+        .target(name: "Types", dependencies:[]),
         .target(
             name: "Palyground",
             dependencies: ["NIO", "NIOHTTP1", "NIOOpenSSL", "RxSwift"]),
