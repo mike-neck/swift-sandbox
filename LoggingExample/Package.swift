@@ -11,11 +11,13 @@ let package = Package(
             name: "LoggingExample",
             targets: ["LoggingExample"]),
         .executable(name: "App", targets: ["App"]),
+        .executable(name: "Nike", targets: ["Nike"]),
         .executable(name: "OsLogging", targets: ["OsLogging"]),
         .executable(name: "S5", targets: ["S5"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-log.git", .branch("master")),
+        .package(url: "https://github.com/Nike-Inc/Willow.git", from: Version(5, 0, 0)),
         .package(url: "https://github.com/SwiftyBeaver/SwiftyBeaver.git", from: Version(1, 0, 0)),
     ],
     targets: [
@@ -27,6 +29,7 @@ let package = Package(
         .target(name: "App", dependencies: ["Logging"]),
         .target(name: "OsLogging", dependencies: ["Logging"]),
         .target(name: "S5", dependencies: ["Logging", "SwiftyBeaver"]),
+        .target(name: "Nike", dependencies: ["Logging", "Willow"]),
         .testTarget(
             name: "LoggingExampleTests",
             dependencies: ["LoggingExample"]),
