@@ -11,9 +11,12 @@ let package = Package(
             name: "LoggingExample",
             targets: ["LoggingExample"]),
         .executable(name: "App", targets: ["App"]),
+        .executable(name: "OsLogging", targets: ["OsLogging"]),
+        .executable(name: "S5", targets: ["S5"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-log.git", .branch("master")),
+        .package(url: "https://github.com/SwiftyBeaver/SwiftyBeaver.git", from: Version(1, 0, 0)),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -22,6 +25,8 @@ let package = Package(
             name: "LoggingExample",
             dependencies: ["Logging"]),
         .target(name: "App", dependencies: ["Logging"]),
+        .target(name: "OsLogging", dependencies: ["Logging"]),
+        .target(name: "S5", dependencies: ["Logging", "SwiftyBeaver"]),
         .testTarget(
             name: "LoggingExampleTests",
             dependencies: ["LoggingExample"]),
