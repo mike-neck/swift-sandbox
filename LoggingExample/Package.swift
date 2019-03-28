@@ -11,6 +11,7 @@ let package = Package(
             name: "LoggingExample",
             targets: ["LoggingExample"]),
         .executable(name: "App", targets: ["App"]),
+        .executable(name: "Hel", targets: ["Hel"]),
         .executable(name: "Nike", targets: ["Nike"]),
         .executable(name: "OsLogging", targets: ["OsLogging"]),
         .executable(name: "S5", targets: ["S5"]),
@@ -18,6 +19,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/apple/swift-log.git", .branch("master")),
         .package(url: "https://github.com/Nike-Inc/Willow.git", from: Version(5, 0, 0)),
+        .package(url: "https://github.com/IBM-Swift/HeliumLogger.git", from: "1.8.0"),
         .package(url: "https://github.com/SwiftyBeaver/SwiftyBeaver.git", from: Version(1, 0, 0)),
     ],
     targets: [
@@ -27,6 +29,7 @@ let package = Package(
             name: "LoggingExample",
             dependencies: ["Logging"]),
         .target(name: "App", dependencies: ["Logging"]),
+        .target(name: "Hel", dependencies: ["Logging", "HeliumLogger"]),
         .target(name: "OsLogging", dependencies: ["Logging"]),
         .target(name: "S5", dependencies: ["Logging", "SwiftyBeaver"]),
         .target(name: "Nike", dependencies: ["Logging", "Willow"]),
