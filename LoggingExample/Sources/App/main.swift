@@ -4,16 +4,15 @@ import Logging
 struct NamedLogHandler: LogHandler {
 
     let label: String
-    var delegate: LogHandler
+    var delegate: Logger
 
     init(_ label: String) {
         self.label = label
-        self.delegate = StdoutLogHandler(label: label)
+        self.delegate = Logger(label: label)
     }
 
     func log(level: Logger.Level, message: Logger.Message, metadata: Logger.Metadata?, file: String, function: String, line: UInt) {
-        let msg = String(describing: message)
-        delegate.log(level: level, message: "\(label) - \(msg)", metadata: metadata, file: file, function: function, line: line)
+        delegate.log(level: level, message, metadata: metadata, file: file, function: function, line: line)
     }
 
     subscript(metadataKey metadataKey: String) -> Logging.Logger.Metadata.Value? {
@@ -133,25 +132,3 @@ guard let data = unknownMessage.data(using: .utf8) else {
 }
 
 花子.receive(data: data)
-
-let log1 = LoggerFactory.getLogger("com.example.1")
-let log2 = LoggerFactory.getLogger("com.example.2")
-
-let semaphore = DispatchSemaphore(value: 0)
-
-DispatchQueue.global().async(execute: {
-    for i in (1 ... 20) {
-        log1.info("(☝՞ਊ ՞)☝ｳｪｰｲwww 1-\(i)")
-    }
-    semaphore.signal()
-})
-
-DispatchQueue.global().async(execute: {
-    for i in (1 ... 20) {
-        log2.info("(☝՞ਊ ՞)☝ｳｪｰｲwww 2-\(i)")
-    }
-    semaphore.signal()
-})
-
-semaphore.wait()
-semaphore.wait()
