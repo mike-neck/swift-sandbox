@@ -8,9 +8,10 @@ Swift の Logging ライブラリー
 ---
 
 * SwiftyBeaver/SwiftyBeaver
-* IBM-Swift/LoggingAPI
+* IBM-Swift/LoggerAPI
 * IBM-Swift/HeliumLogger
 * emaloney/CleanroomLogger
+* Nike/Willow
 
 一般的に Logging ライブラリーに求められる
 ---
@@ -26,6 +27,8 @@ Swift の Logging ライブラリー
   * 開発中は多くのログが出る
   * リリースされたアプリでは必要なもののみ
 * ログ出力先を設定できる
+* ログ実装に変更があってもすぐに切り替えられる
+  * 例えば特定のログ出力ライブラリー
 * 複数のスレッドから(メッセージを破壊することなく)安全に出力できる
 * 遅くない/ブロックしない
   * すぐにユーザーアプリケーションにコントロールが戻る
