@@ -42,20 +42,20 @@ extension Logging.Logger.Level {
 struct WillowLogHandler: LogHandler {
 
     enum Message: LogMessage {
-        case logMessage(file: String, function: String, line: UInt, metaadta: Logging.Logger.Metadata?, message: String)
+        case logMessage(level: Log.Level, file: String, function: String, line: UInt, metaadta: Logging.Logger.Metadata?, message: String)
 
         var name: String {
             switch self {
-            case .logMessage(let file, let function, let line, _, _):
+            case .logMessage(let level,let file, let function, let line, _, _):
                 return """
-                       file="\(file)",function="\(function)",line=\(line)
+                       file="\(file)",function="\(function)",line=\(line): [\(level)]
                        """
             }
         }
 
         var attributes: [String: Any] {
             switch self {
-            case .logMessage(_, _, _, let metadata, let message):
+            case .logMessage(_, _, _, _, let metadata, let message):
                 guard let meta = metadata else {
                     return ["message": message]
                 }
@@ -80,9 +80,25 @@ struct WillowLogHandler: LogHandler {
             file: String,
             function: String,
             line: UInt) {
+
         let msg = Message.logMessage(
-                file: file, function: function, line: line, metaadta: metadata, message: String(describing: message))
+                level: level,
+                file: file,
+                function: function,
+                line: line,
+                metaadta: extractMetadata(metadata: metadata),
+                message: String(describing: message))
         level.handle(logger: delegate, withMessage: msg)
+    }
+
+    func extractMetadata(metadata: Log.Metadata?) -> Log.Metadata {
+        guard let meta = metadata else {
+            return self.metadata
+        }
+        let both: Log.Metadata = [:]
+        return both
+                .merging(meta, uniquingKeysWith: { (l: Log.Metadata.Value, r: Log.Metadata.Value) -> Log.Metadata.Value in l })
+                .merging(self.metadata, uniquingKeysWith: { (l: Log.Metadata.Value, r: Log.Metadata.Value) -> Log.Metadata.Value in l })
     }
 
     subscript(metadataKey key: String) -> Log.Metadata.Value? {
