@@ -10,7 +10,6 @@ Swift の Logging ライブラリー
 * SwiftyBeaver/SwiftyBeaver
 * IBM-Swift/LoggerAPI
 * IBM-Swift/HeliumLogger
-* emaloney/CleanroomLogger
 * Nike/Willow
 
 一般的に Logging ライブラリーに求められる
