@@ -80,10 +80,10 @@ struct WillowLogHandler: LogHandler {
             file: String,
             function: String,
             line: UInt) {
-
+        let filePath = file.split(separator: "/")
         let msg = Message.logMessage(
                 level: level,
-                file: file,
+                file: "\(filePath[filePath.endIndex - 1])",
                 function: function,
                 line: line,
                 metaadta: extractMetadata(metadata: metadata),
