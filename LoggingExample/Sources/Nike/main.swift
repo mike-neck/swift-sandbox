@@ -161,30 +161,30 @@ if args.count == 1 || args[1] == "willow" {
     runAppForWillow(use: willow)
 
 } else if args[1] == "info" {
-    let apple = Log(
-            label: "com.example.App",
-            factory: { label in
-                WillowLogHandler(delegating: { level in
-                    WilLogger(
-                            logLevels: level.wilowLevel(),
-                            writers: [ConsoleWriter(modifiers: [TimestampModifier()])])
-                }, logLevel: .info)
-            })
+    LoggingSystem.bootstrap({ label in
+                    WillowLogHandler(delegating: { level in
+                        WilLogger(
+                                logLevels: level.wilowLevel(),
+                                writers: [ConsoleWriter(modifiers: [TimestampModifier()])])
+                    }, logLevel: .info)
+                })
+
+    let apple = Log(label: "com.example.App")
 
     apple.info("start info")
 
     runAppForApple(use: apple)
 
 } else if args[1] == "debug" {
-    var apple = Log(
-            label: "com.example.App",
-            factory: { label in
-                WillowLogHandler(delegating: { level in
-                    WilLogger(
-                            logLevels: level.wilowLevel(),
-                            writers: [ConsoleWriter(modifiers: [TimestampModifier()])])
-                }, logLevel: .info)
-            })
+    LoggingSystem.bootstrap({ label in
+                    WillowLogHandler(delegating: { level in
+                        WilLogger(
+                                logLevels: level.wilowLevel(),
+                                writers: [ConsoleWriter(modifiers: [TimestampModifier()])])
+                    }, logLevel: .info)
+                })
+
+    var apple = Log(label: "com.example.App")
 
     apple.info("start info")
 
