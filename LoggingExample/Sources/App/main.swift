@@ -28,8 +28,12 @@ func runApp(use logger: Logger) {
 
 var logger = Logger(label: "com.example.App")
 
+logger.warning("set default logLevel")
+
 runApp(use: logger)
 
-logger.logLevel = .info
+logger.warning("set logLevel debug")
+
+logger.logLevel = .debug
 
 runApp(use: logger)
